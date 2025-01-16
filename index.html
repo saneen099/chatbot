@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chatbot-container {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .shop-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .shop-info h1 {
+            font-size: 22px;
+            margin: 0;
+            color: #333;
+        }
+        .shop-info p {
+            font-size: 16px;
+            margin: 5px 0 15px;
+            color: #555;
+        }
+        .chatbot-header {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .chatbot-options button, .back-button, .finish-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .chatbot-options button:hover, .back-button:hover, .finish-button:hover {
+            background: #0056b3;
+        }
+        .chatbot-response {
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: center;
+            color: #333;
+        }
+        .input-box {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .input-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .feedback-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .feedback-section select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-container">
+        <div class="shop-info">
+            <h1>ALFA COOL HOUSE</h1>
+            <p>AC, Refrigerator, Washing Machine - Sales and Services</p>
+            <p>Contact us: +91 9895 624 556</p>
+        </div>
+        <div class="chatbot-header">How can I help you, sir?</div>
+        <div class="chatbot-response" id="response"></div>
+        <div class="chatbot-options" id="options">
+            <button onclick="selectService('AC')">AC</button>
+            <button onclick="selectService('Fridge')">Fridge</button>
+            <button onclick="selectService('Washing Machine')">Washing Machine</button>
+        </div>
+        <div class="input-box" id="input-box" style="display: none;">
+            <input type="text" id="userInput" placeholder="Enter your issue...">
+            <button onclick="submitIssue()">Submit</button>
+            <button class="back-button" onclick="goBack()">Back</button>
+        </div>
+        <div class="chatbot-options" id="follow-up-options" style="display: none;">
+            <button onclick="showResponse('contact')">Contact Shop</button>
+            <button onclick="showResponse('location')">Location</button>
+            <button class="back-button" onclick="goBack()">Back</button>
+        </div>
+        <div class="chatbot-response" id="final-response" style="display: none;">
+            <p id="finalMessage"></p>
+            <button class="back-button" onclick="restart()">Back</button>
+            <button class="finish-button" onclick="showFeedback()">Finish</button>
+        </div>
+        <div class="feedback-section" id="feedback-section" style="display: none;">
+            <p>Please rate your experience:</p>
+            <select id="feedback">
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Average">Average</option>
+                <option value="Poor">Poor</option>
+            </select>
+            <button onclick="submitFeedback()">Submit Feedback</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedService = '';
+        let issues = [];
+        let feedback = '';
+
+        function selectService(service) {
+            selectedService = service;
+            document.getElementById('options').style.display = 'none';
+            document.getElementById('input-box').style.display = 'block';
+            document.getElementById('response').textContent = `What is the problem with your ${service}?`;
+        }
+
+        function submitIssue() {
+            const userInput = document.getElementById('userInput').value;
+            if (userInput.trim() === '') {
+                alert('Please enter the issue.');
+                return;
+            }
+            // Save the issue
+            issues.push({ service: selectedService, issue: userInput.trim() });
+            console.log("Customer Issues:", issues); // Log issues in console
+
+            document.getElementById('input-box').style.display = 'none';
+            document.getElementById('follow-up-options').style.display = 'block';
+            document.getElementById('response').textContent = `You mentioned an issue with your ${selectedService}: "${userInput}".`;
+            document.getElementById('userInput').value = ''; // Clear input
+        }
+
+        function showResponse(option) {
+            const finalMessage = document.getElementById('finalMessage');
+            document.getElementById('follow-up-options').style.display = 'none';
+            document.getElementById('final-response').style.display = 'block';
+
+            if (option === 'contact') {
+                finalMessage.textContent = 'Call us at: +91 9895 624 556. Another contact: +91 9526 94 2848';
+            } else if (option === 'location') {
+                finalMessage.textContent = 'We are located at: Mattil Palli, Vengara. Near OGGY Cloth Shop';
+            }
+        }
+
+        function showFeedback() {
+            document.getElementById('final-response').style.display = 'none';
+            document.getElementById('feedback-section').style.display = 'block';
+        }
+
+        function submitFeedback() {
+            feedback = document.getElementById('feedback').value;
+            console.log("User Feedback:", feedback); // Log feedback
+            alert(`Thank you for your feedback: ${feedback}`);
+            restart();
+        }
+
+        function goBack() {
+            document.getElementById('response').textContent = '';
+            document.getElementById('input-box').style.display = 'none';
+            document.getElementById('follow-up-options').style.display = 'none';
+            document.getElementById('final-response').style.display = 'none';
+            document.getElementById('feedback-section').style.display = 'none';
+            document.getElementById('options').style.display = 'block';
+        }
+
+        function restart() {
+            document.getElementById('final-response').style.display = 'none';
+            document.getElementById('feedback-section').style.display = 'none';
+            document.getElementById('response').textContent = '';
+            document.getElementById('options').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
